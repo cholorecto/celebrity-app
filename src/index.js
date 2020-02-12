@@ -14,6 +14,7 @@ class Celebrity extends Component {
             selectedData: null,
             noAlert: true,
             visible: false,
+            userAction: 'Add',
         }
     }
 
@@ -31,6 +32,8 @@ class Celebrity extends Component {
     showModal = () => {
         this.setState({
           visible: true,
+          selectedData: null,
+          userAction: 'Add',
         });
       };
 
@@ -43,8 +46,30 @@ class Celebrity extends Component {
       handleCancel = e => {
         this.setState({
           visible: false,
+          selectedData: null,
         });
       };
+
+      handleActions = (action, data) => {
+        if (action === 'Edit') {
+          this.setState({
+            visible: true,
+            selectedData: data,
+            userAction: 'Edit',
+          });
+
+        }
+
+        if (action === 'View') {
+          this.setState({
+            visibleDrawer: true,
+          });
+        }
+      };
+
+      getNewSelected = (data) => {
+        this.setState({selectedData:data})
+      }
 
     render() {
       const WrappedCelebForm = Form.create({
@@ -90,7 +115,7 @@ class Celebrity extends Component {
                 <Row>
                     <Col span={12} offset={6}>
                         <Button type="primary" onClick={this.showModal}>Add</Button>
-                        <Table data={this.state.celebs} />
+                        <Table data={this.state.celebs} handleActions={this.handleActions} />
                     </Col>
                 </Row>
 
@@ -104,6 +129,8 @@ class Celebrity extends Component {
                     {...this.props}
                     selectedData={this.state.selectedData}
                     userAction={this.state.userAction}
+                    getData={this.getData}
+                    getNewSelected={this.getNewSelected}
                   />
                 </Modal>
             </div>

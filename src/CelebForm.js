@@ -1,16 +1,23 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-unresolved */
 import React from 'react';
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select, notification } from 'antd';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 const { Option } = Select
+
+const openNotification = (message) => {
+  notification.open({
+    message: message,
+  });
+}
 
 const CelebForm = ({
   form,
-  addAction,
   userAction,
-  editAction,
   selectedData,
+  getData,
+  getNewSelected
 }) => {
   const handleSubmit = e => {
     e.preventDefault();
@@ -25,7 +32,13 @@ const CelebForm = ({
           data.contact_number = values.contact_number
           data.address = values.address
           data.gender = values.gender
-          addAction(data);
+          axios.post(`http://localhost:3000/add`, data)
+            .then(res => {
+                if(res.status === 200) {
+                    getData()
+                    openNotification('Added successfully')
+                }
+            })
         }
 
         if (userAction === 'Edit') {
@@ -36,8 +49,15 @@ const CelebForm = ({
           data.contact_number = values.contact_number
           data.address = values.address
           data.gender = values.gender
-          data.id = selectedData.id
-          editAction(data);
+          data._id = selectedData._id
+          axios.put(`http://localhost:3000/update`, data)
+          .then(res => {
+              if(res.status === 200) {
+                  getData()
+                  openNotification('Updated successfully')
+                  getNewSelected(data)
+              }
+          })
         }
       }
     });
@@ -100,9 +120,7 @@ const CelebForm = ({
 
 CelebForm.propTypes = {
   form: PropTypes.func.isRequired,
-  addAction: PropTypes.func.isRequired,
   userAction: PropTypes.func.isRequired,
-  editAction: PropTypes.func.isRequired,
   selectedData: PropTypes.func.isRequired,
 };
 
