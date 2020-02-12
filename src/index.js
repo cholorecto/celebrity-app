@@ -115,7 +115,7 @@ class Celebrity extends Component {
                 <Row>
                     <Col span={12} offset={6}>
                         <Button type="primary" onClick={this.showModal}>Add</Button>
-                        <Table data={this.state.celebs} handleActions={this.handleActions} />
+                        <Table data={this.state.celebs} handleActions={this.handleActions} getData={this.getData} />
                     </Col>
                 </Row>
 

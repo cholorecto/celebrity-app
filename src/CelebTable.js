@@ -1,20 +1,30 @@
 /* eslint-disable no-shadow */
 import React from 'react';
-import { Table, Button, Icon, Divider, Tooltip, Modal } from 'antd';
+import { Table, Button, Icon, Divider, Tooltip, Modal, notification } from 'antd';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 const { confirm } = Modal;
 
 const PerformanceEvaluationTable = ({
   data,
   handleActions,
-  deleteAction,
+  getData
 }) => {
   const showConfirm = record => {
     confirm({
       title: 'Do you want to delete this item?',
 
       onOk() {
-        deleteAction(record.id);
+        const dataSubmit = {
+          _id: record._id
+       }
+        axios.delete('http://localhost:3000/delete', {data:dataSubmit})
+        .then(res => {
+            getData()
+            notification.open({
+              message: 'Deleted successfully'
+            })
+        })
       },
       onCancel() {},
     });
