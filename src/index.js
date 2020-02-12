@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import Table from './CelebTable'
 import './App.css'
-import { Row, Col, Button, Modal } from 'antd';
+import { Row, Col, Button, Modal, Form } from 'antd';
+import CelebForm from './CelebForm'
 
 class Celebrity extends Component {
     constructor(props) {
@@ -46,6 +47,44 @@ class Celebrity extends Component {
       };
 
     render() {
+      const WrappedCelebForm = Form.create({
+        mapPropsToFields(props) {
+          const { selectedData } = props;
+          return {
+            first_name: Form.createFormField({
+              ...props,
+              value:
+                selectedData !== null ? selectedData.first_name : '',
+              valuePropName: 'first_name',
+            }),
+            last_name: Form.createFormField({
+              ...props,
+              value: selectedData !== null ? selectedData.last_name : '',
+              valuePropName: 'last_name',
+            }),
+            middle_name: Form.createFormField({
+              ...props,
+              value: selectedData !== null ? selectedData.middle_name : '',
+              valuePropName: 'middle_name',
+            }),
+            contact_number: Form.createFormField({
+              ...props,
+              value: selectedData !== null ? selectedData.contact_number : '',
+              valuePropName: 'contact_number',
+            }),
+            address: Form.createFormField({
+              ...props,
+              value: selectedData !== null ? selectedData.address : '',
+              valuePropName: 'address',
+            }),
+            gender: Form.createFormField({
+              ...props,
+              value: selectedData !== null ? selectedData.gender : '',
+              valuePropName: 'gender',
+            }),
+          };
+        },
+      })(CelebForm);
         return (
             <div>
                 <Row>
@@ -61,9 +100,11 @@ class Celebrity extends Component {
                   onOk={this.handleOk}
                   onCancel={this.handleCancel}
                 >
-                  <p>Some contents...</p>
-                  <p>Some contents...</p>
-                  <p>Some contents...</p>
+                  <WrappedCelebForm
+                    {...this.props}
+                    selectedData={this.state.selectedData}
+                    userAction={this.state.userAction}
+                  />
                 </Modal>
             </div>
         );
