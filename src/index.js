@@ -144,14 +144,13 @@ class Celebrity extends Component {
                 </Modal>
 
                 <Drawer
-                  title="Basic Drawer"
+                  title="Information"
                   placement="right"
                   closable={false}
                   onClose={this.onCloseDrawer}
                   visible={this.state.visibleDrawer}
                   width={600}
                 >
-                  {console.log(this.state.selectedData)}
                   {this.state.selectedData && <Descriptions bordered colon={false}>
                   <Descriptions.Item span={3} label="First name">
                     {this.state.selectedData.first_name}
