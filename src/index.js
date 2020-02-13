@@ -24,8 +24,6 @@ const Celebrity = () => {
 
   useEffect(() => {
     getData();
-    console.log('h');
-
   }, [gettingData])
 
   const showModal = () => {
