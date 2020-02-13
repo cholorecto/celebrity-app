@@ -45,6 +45,16 @@ const PerformanceEvaluationTable = ({
         </Button>
       </Tooltip>
 
+      <Tooltip title="View">
+        <Button
+          type="link"
+          style={{ color: '#3D8DB0' }}
+          onClick={() => handleActions('View', record)}
+        >
+          <Icon type="eye" style={{ fontSize: 20 }} />
+        </Button>
+      </Tooltip>
+
       <Tooltip title="Delete">
         <Button
           type="link"

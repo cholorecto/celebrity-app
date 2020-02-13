@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import Table from './CelebTable'
 import './App.css'
-import { Row, Col, Button, Modal, Form } from 'antd';
+import { Row, Col, Button, Modal, Form, Drawer, Descriptions } from 'antd';
 import CelebForm from './CelebForm'
 
 class Celebrity extends Component {
@@ -15,6 +15,7 @@ class Celebrity extends Component {
             noAlert: true,
             visible: false,
             userAction: 'Add',
+            visibleDrawer: false,
         }
     }
 
@@ -63,6 +64,7 @@ class Celebrity extends Component {
         if (action === 'View') {
           this.setState({
             visibleDrawer: true,
+            selectedData: data
           });
         }
       };
@@ -70,6 +72,13 @@ class Celebrity extends Component {
       getNewSelected = (data) => {
         this.setState({selectedData:data})
       }
+
+      onCloseDrawer = () => {
+        this.setState({
+          visibleDrawer: false,
+          selectedData: null
+        });
+      };
 
     render() {
       const WrappedCelebForm = Form.create({
@@ -113,7 +122,7 @@ class Celebrity extends Component {
         return (
             <div>
                 <Row>
-                    <Col span={12} offset={6}>
+                    <Col span={12} offset={6} style={{marginTop: 20}}>
                         <Button type="primary" onClick={this.showModal}>Add</Button>
                         <Table data={this.state.celebs} handleActions={this.handleActions} getData={this.getData} />
                     </Col>
@@ -133,6 +142,37 @@ class Celebrity extends Component {
                     getNewSelected={this.getNewSelected}
                   />
                 </Modal>
+
+                <Drawer
+                  title="Basic Drawer"
+                  placement="right"
+                  closable={false}
+                  onClose={this.onCloseDrawer}
+                  visible={this.state.visibleDrawer}
+                  width={600}
+                >
+                  {console.log(this.state.selectedData)}
+                  {this.state.selectedData && <Descriptions bordered colon={false}>
+                  <Descriptions.Item span={3} label="First name">
+                    {this.state.selectedData.first_name}
+                  </Descriptions.Item>
+                  <Descriptions.Item span={3} label="Last name">
+                    {this.state.selectedData.last_name}
+                  </Descriptions.Item>
+                  <Descriptions.Item span={3} label="Middle name">
+                    {this.state.selectedData.middle_name}
+                  </Descriptions.Item>
+                  <Descriptions.Item span={3} label="Contact number">
+                    {this.state.selectedData.contact_number}
+                  </Descriptions.Item>
+                  <Descriptions.Item span={3} label="Address">
+                    {this.state.selectedData.address}
+                  </Descriptions.Item>
+                  <Descriptions.Item span={3} label="Gender">
+                    {this.state.selectedData.gender}
+                  </Descriptions.Item>
+                </Descriptions>}
+                </Drawer>
             </div>
         );
     }
