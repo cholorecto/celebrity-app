@@ -1,11 +1,12 @@
 /* eslint-disable no-shadow */
-import React from 'react';
-import { Table, Button, Icon, Divider, Tooltip, Modal, notification } from 'antd';
+import React, { useState } from 'react';
+import { Table, Button, Icon, Divider, Tooltip, Modal, notification, Input } from 'antd';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import Highlighter from 'react-highlight-words';
 const { confirm } = Modal;
 
-const PerformanceEvaluationTable = ({
+const CelebsTable = ({
   data,
   handleActions,
   getData
@@ -67,18 +68,80 @@ const PerformanceEvaluationTable = ({
     </div>
   );
 
+  const [searchText, setSearchText] = useState()
+  const [searchedColumn, setSearchedColumn] = useState()
+
+  const getColumnSearchProps = dataIndex => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Button
+          type="primary"
+          onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          icon="search"
+          size="small"
+          style={{ width: 90, marginRight: 8 }}
+        >
+          Search
+        </Button>
+        <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          Reset
+        </Button>
+      </div>
+    ),
+    filterIcon: filtered => (
+      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes(value.toLowerCase()),
+
+    render: text =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text.toString()}
+        />
+      ) : (
+        text
+      ),
+  });
+
+   const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0])
+    setSearchedColumn(dataIndex)
+  };
+
+   const handleReset = clearFilters => {
+    clearFilters();
+    setSearchText('')
+  };
+
   const columns = [
     {
       title: 'First name',
       dataIndex: 'first_name',
       key: 'first_name',
       width: 200,
+      ...getColumnSearchProps('first_name'),
     },
     {
       title: 'Last name',
       dataIndex: 'last_name',
       key: 'last_name',
       width: 200,
+      ...getColumnSearchProps('last_name'),
     },
     {
       title: 'Gender',
@@ -106,10 +169,10 @@ const PerformanceEvaluationTable = ({
   );
 };
 
-PerformanceEvaluationTable.propTypes = {
+CelebsTable.propTypes = {
   data: PropTypes.func.isRequired,
   handleActions: PropTypes.func.isRequired,
   deleteAction: PropTypes.func.isRequired,
 };
 
-export default PerformanceEvaluationTable;
+export default CelebsTable;
